@@ -29,34 +29,41 @@ public class BotServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
-
-        String auth = request.getHeader("Authorization");
-        auth = auth.split(" ")[1];
-        if(!auth.equals(API_AUTH_TOKEN)) {
-            out.println("{status: 403, message: 'Unauthorized'}");
-            return;
-        }
-
         try {
-            discordBotApi = JDABuilder.createDefault(TOKEN)
-                    .build();
-            discordBotApi.awaitReady();
+            String auth = request.getHeader("Authorization");
+            auth = auth.split(" ")[1];
+            if(!auth.equals(API_AUTH_TOKEN)) {
+                out.println("{status: 403, message: 'Unauthorized'}");
+                return;
+            }
+
+            String name = request.getParameter("name");
+            String from = request.getParameter("from");
+            String message = request.getParameter("message");
+
+            if(name == null || from == null || message == null) {
+                out.println("{status: 400, message: 'Param Error'}");
+                return;
+            }
+
+            try {
+                discordBotApi = JDABuilder.createDefault(TOKEN)
+                        .build();
+                discordBotApi.awaitReady();
+            } catch (LoginException | InterruptedException e) {
+                throw new Error("Bot Init Error");
+            }
+
+            String data = name + "<" + from + ">\n\n" + message;
+
+            TextChannel channel = discordBotApi.getTextChannelById(CHANNEL_ID);
+            if (channel != null) {
+                channel.sendMessage(data).queue();
+                out.println("{status: 200, message: 'Success'}");
+            } else {
+                out.println("{status: 500, message: 'Internal Server Error'}");
+            }
         } catch (Exception e) {
-            out.println("{status: 500, message: 'Internal Server Error'}");
-            return;
-        }
-
-        String name = request.getParameter("name");
-        String from = request.getParameter("from");
-        String message = request.getParameter("message");
-
-        String data = name + "<" + from + ">\n\n" + message;
-
-        TextChannel channel = discordBotApi.getTextChannelById(CHANNEL_ID);
-        if (channel != null) {
-            channel.sendMessage(data).queue();
-            out.println("{status: 200, message: 'Success'}");
-        } else {
             out.println("{status: 500, message: 'Internal Server Error'}");
         }
     }

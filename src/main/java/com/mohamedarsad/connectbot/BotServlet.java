@@ -29,10 +29,10 @@ public class BotServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
+
         try {
             String auth = request.getHeader("Authorization");
-            auth = auth.split(" ")[1];
-            if(!auth.equals(API_AUTH_TOKEN)) {
+            if(auth == null || !auth.split(" ")[1].equals(API_AUTH_TOKEN)) {
                 out.println("{status: 403, message: 'Unauthorized'}");
                 return;
             }
@@ -57,6 +57,7 @@ public class BotServlet extends HttpServlet {
             String data = name + "<" + from + ">\n\n" + message;
 
             TextChannel channel = discordBotApi.getTextChannelById(CHANNEL_ID);
+
             if (channel != null) {
                 channel.sendMessage(data).queue();
                 out.println("{status: 200, message: 'Success'}");

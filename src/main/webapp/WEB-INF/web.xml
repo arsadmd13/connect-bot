@@ -4,6 +4,23 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
+    <filter>
+        <filter-name>CorsFilter</filter-name>
+        <filter-class>org.apache.catalina.filters.CorsFilter</filter-class>
+        <init-param>
+            <param-name>cors.allowed.origins</param-name>
+            <param-value>https://mohamedarsad.com</param-value>
+        </init-param>
+        <init-param>
+            <param-name>cors.allowed.methods</param-name>
+            <param-value>GET,POST</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>CorsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <servlet>
         <servlet-name>BotServlet</servlet-name>
         <servlet-class>com.mohamedarsad.connectbot.BotServlet</servlet-class>

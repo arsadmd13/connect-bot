@@ -2,8 +2,8 @@ package com.mohamedarsad.connectbot;
 
 import java.io.*;
 import javax.security.auth.login.LoginException;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+import javax.servlet.annotation.WebServlet;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;

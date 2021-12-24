@@ -11,9 +11,9 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 @WebServlet(name = "botServlet", value = "/bot")
 public class BotServlet extends HttpServlet {
-    final private static String TOKEN = "<!-- DISCORD BOT TOKEN -->";
-    final private static String API_AUTH_TOKEN = "<!-- API AUTH TOKEN -->";
-    final private static String CHANNEL_ID = "<!-- CHANNEL ID TO POST MESSAGE -->";
+    final private static String TOKEN = System.getenv("DISCORD_BOT_TOKEN");
+    final private static String API_AUTH_TOKEN = System.getenv("API_AUTH_TOKEN");
+    final private static String CHANNEL_ID = System.getenv("CHANNEL_ID");
 
     private JDA discordBotApi = null;
 
@@ -33,7 +33,7 @@ public class BotServlet extends HttpServlet {
         try {
             String auth = request.getHeader("Authorization");
             if(auth == null || !auth.split(" ")[1].equals(API_AUTH_TOKEN)) {
-                out.println("{status: 403, message: 'Unauthorized'}");
+                out.println("{\"status\": 403, \"message\": \"Unauthorized\"}");
                 return;
             }
 
@@ -42,7 +42,7 @@ public class BotServlet extends HttpServlet {
             String message = request.getParameter("message");
 
             if(name == null || from == null || message == null) {
-                out.println("{status: 400, message: 'Param Error'}");
+                out.println("{\"status\": 400, \"message\": \"Param Error\"}");
                 return;
             }
 
@@ -60,12 +60,12 @@ public class BotServlet extends HttpServlet {
 
             if (channel != null) {
                 channel.sendMessage(data).queue();
-                out.println("{status: 200, message: 'Success'}");
+                out.println("{\"status\": 200, \"message\": \"Success\"}");
             } else {
-                out.println("{status: 500, message: 'Internal Server Error'}");
+                out.println("{\"status\": 500, \"message\": \"Internal Server Error\"}");
             }
         } catch (Exception e) {
-            out.println("{status: 500, message: 'Internal Server Error'}");
+            out.println("{\"status\": 500, \"message\": \"Internal Server Error\"}");
         }
     }
 
